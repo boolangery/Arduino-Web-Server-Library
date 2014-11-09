@@ -1,12 +1,12 @@
 #include "HtmlObject.h"
 
 
-HtmlObject::HtmlObject(int linkedVar): _counter(0), _nLinked(linkedVar), _format(NORMAL)
+HtmlObject::HtmlObject(int linkedVarsMax): _counter(0), _nLinked(linkedVarsMax), _format(NORMAL)
 {
     _linkedVars = new LinkedVar*[_nLinked];
 }
 
-HtmlObject::HtmlObject(int linkedVar, dataFormat_t f):_counter(0), _nLinked(linkedVar), _format(f)
+HtmlObject::HtmlObject(int linkedVarsMax, dataFormat_t f):_counter(0), _nLinked(linkedVarsMax), _format(f)
 {
     _linkedVars = new LinkedVar*[_nLinked];
 }
@@ -56,6 +56,14 @@ String HtmlObject::getFormatedString(PROGMEM const char *str) const {
     
     if (counter != _counter)
         return "HtmlObject::Error::Number of # != size";
+        
+    counter=0;
+    for(int i=0; i<len; i++)
+        if (b1[i] == '$')
+            counter++;
+    
+    if (counter != _childs.size())
+        return "HtmlObject::Error::Number of $ != _child.size()";
   
     for(int i=0; i<len; i++)
     {
@@ -65,6 +73,10 @@ String HtmlObject::getFormatedString(PROGMEM const char *str) const {
                 ret += _linkedVars[k++]->getHexValue();
             else
                 ret += _linkedVars[k++]->getValue();
+        }
+        else if (b1[i] == '$')
+        {
+            ret += _childs[k++]->getHtml();
         }
         else
         {

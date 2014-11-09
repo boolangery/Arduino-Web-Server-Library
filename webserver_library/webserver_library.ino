@@ -1,37 +1,46 @@
 #include "HtmlPage.h"
 #include "HtmlMacField.h"
 #include "LinkedVar.h"
-
+#include "WebServer.h"
+#include "HtmlDiv.h"
 
 #include <Ethernet.h>
 #include <SPI.h>
 
+#include "MemoryFree.h"
+
+WebServer server;
+
+
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+IPAddress ip(192,168,2,42);
 
 void setup() 
 {
     Serial.begin(9600);
     
-
-  //  LinkedVar array[2] = {LinkedVar(&value, LinkedVar::INT), LinkedVar(&fvalue, LinkedVar::INT)};
-   // Serial.println(getFormatedString("Bonjour # avez vous recu # euros ?", array, 2));
-   
-    int mac_values[6] = {255,1,2,3,4,5};
     
-    HtmlPage page("Page 1");
-   
-    HtmlMacField mac;
-    
-    mac.linkVars(LinkedVar::linkArray(mac_values, 6), 6);
+    HtmlMacField *macField = new HtmlMacField();
+    macField->linkVars(LinkedVar::linkArray(mac, 6), 6);
+    HtmlDiv *div = new HtmlDiv(macField);
     
     
-    Serial.println(mac.getHtml());
+    HtmlPage *page = new HtmlPage("Page 1", div);
+    server.add(page);
     
-  
+    Serial.println(page->getHtml());
+    
+    Serial.print("RAM libre   : "); Serial.println(freeMemory());
+    
+    Ethernet.begin(mac, ip);
+    server.begin();
+    
 }
+
 
 
 void loop()
 {
-  
+    server.handle();
   
 }

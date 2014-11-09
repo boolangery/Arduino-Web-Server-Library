@@ -11,9 +11,10 @@
 class LinkedVar
 {
     public:
-        enum types_t {INT, STRING};
+        enum types_t {INT, ,BYTE, STRING};
         
         LinkedVar(int *var): _var(var), _type(INT) {}
+        LinkedVar(byte *var): _var(var), _type(BYTE) {}
         
         static LinkedVar** linkArray(int *array, int arrSize)
         {
@@ -22,12 +23,22 @@ class LinkedVar
                 vars[i] = new LinkedVar(&array[i]);
             return vars;
         }
+        static LinkedVar** linkArray(byte *array, int arrSize)
+        {
+            LinkedVar **vars = new LinkedVar*[arrSize];
+            for (int i=0; i<arrSize;i++)
+                vars[i] = new LinkedVar(&array[i]);
+            return vars;
+        }
+        
         
         String getValue()
         {
             switch(_type) {
                 case INT:
                 return String(*((int*)(_var)));
+                case BYTE:
+                return String(*((byte*)(_var)));
                 case STRING:
                 return *((String*)(_var));
             }
@@ -40,7 +51,9 @@ class LinkedVar
                 case INT:
                 sprintf(buffer, "%x", *((int*)(_var)));
                 return String(buffer);
-           
+                case BYTE:
+                sprintf(buffer, "%x", *((byte*)(_var)));
+                return String(buffer);
               
             }
         }

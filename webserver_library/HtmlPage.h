@@ -5,22 +5,21 @@
 #include <Ethernet.h>
 #include <SPI.h>
 
+#include "HtmlObject.h"
 
 class HtmlPage
 {
     public:
-        HtmlPage(String pageName);
-        
-    
-        void sendHttpResponse(EthernetClient *client);
-        void beginPage(EthernetClient *client);
-        void endPage(EthernetClient *client);
+        HtmlPage(String pageName, HtmlObject *content);
 
-        void sendStr(EthernetClient *client, PROGMEM const char *str);
-
+        String getHtml()
+        {
+            return _content->getHtml();
+        }
 
     private:
         String _pageName;
+        HtmlObject *_content;
 };
 
 #endif
