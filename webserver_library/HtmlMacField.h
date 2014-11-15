@@ -12,7 +12,7 @@ class HtmlMacField : public HtmlObject
     public:
         HtmlMacField();
         String getHtml() const;
-
+        virtual int acceptNChild() { return 0;}
   
     private:
         

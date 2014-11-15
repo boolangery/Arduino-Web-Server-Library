@@ -8,13 +8,15 @@
 * Représente une variable qui va étre linkée à un objet Html.
 *
 **/
+
 class LinkedVar
 {
     public:
-        enum types_t {INT, ,BYTE, STRING};
+        enum types_t {INT,BYTE, STRING, BOOL};
         
         LinkedVar(int *var): _var(var), _type(INT) {}
         LinkedVar(byte *var): _var(var), _type(BYTE) {}
+        LinkedVar(bool *var): _var(var), _type(BOOL) {}
         
         static LinkedVar** linkArray(int *array, int arrSize)
         {
@@ -39,6 +41,8 @@ class LinkedVar
                 return String(*((int*)(_var)));
                 case BYTE:
                 return String(*((byte*)(_var)));
+                case BOOL:
+                return String(*((bool*)(_var)));
                 case STRING:
                 return *((String*)(_var));
             }
@@ -58,14 +62,22 @@ class LinkedVar
             }
         }
         
-        
         void setValue(int newValue) { *((int*)(_var)) = newValue; }
-        void setValue(String newValue) { *((String*)(_var)) = newValue; }
+        void setValue(String newValue) 
+        { 
+            //Serial.println("setValue : " + newValue);
+            switch(_type) {
+                case BOOL:
+                *((bool*)(_var)) = newValue.equals("true")?true:false ;
+            }
+        }
         
    
     private:
         void *_var;
         types_t _type;
 };
+
+
 
 #endif
