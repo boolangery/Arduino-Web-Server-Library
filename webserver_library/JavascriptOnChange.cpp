@@ -30,7 +30,7 @@ String JavascriptOnChange::getInnerHtml() const
 }
 
 
-String JavascriptOnChange::getHtml() const
+void JavascriptOnChange::renderHtml(BufferedEthernetClient *client) const
 {
-    return getFormatedString((char*)pgm_read_word(&(JavascriptOnChange_tab[0])));
+    getFormatedString(client, (char*)pgm_read_word(&(JavascriptOnChange_tab[0])));
 }

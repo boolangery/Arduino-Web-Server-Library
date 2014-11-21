@@ -25,6 +25,7 @@ class LinkedVar
                 vars[i] = new LinkedVar(&array[i]);
             return vars;
         }
+        
         static LinkedVar** linkArray(byte *array, int arrSize)
         {
             LinkedVar **vars = new LinkedVar*[arrSize];
@@ -33,7 +34,32 @@ class LinkedVar
             return vars;
         }
         
-        
+        // Str: Taille de 17 minimum
+        void getValueStr(char str[], int base)
+        {
+            switch(_type) 
+            {
+            case INT:
+                itoa(*((int*)(_var)), str, base);
+                break;
+            
+            case BYTE:
+                itoa(*((byte*)(_var)), str, base);
+                break;
+                  
+            case BOOL:
+                if (*((bool*)(_var)))
+                    str = "true";
+                else
+                    str = "false";
+                break;
+            
+            case STRING:
+                strcpy(str, (char*)(_var));
+                break;
+            }
+        }
+        /*
         String getValue()
         {
             switch(_type) {
@@ -47,7 +73,8 @@ class LinkedVar
                 return *((String*)(_var));
             }
         }
-        
+        */
+        /*
         String getHexValue()
         {
             char buffer[40];
@@ -61,17 +88,22 @@ class LinkedVar
               
             }
         }
-        
+        */
         void setValue(int newValue) { *((int*)(_var)) = newValue; }
-        void setValue(String newValue) 
+        
+        void setValue(const char newValue[]) 
         { 
             //Serial.println("setValue : " + newValue);
             switch(_type) {
-                case BOOL:
-                *((bool*)(_var)) = newValue.equals("true")?true:false ;
+            case BOOL:
+                *((bool*)(_var)) = (strcmp(newValue, "true")==0)?true:false ;
+                break;
+                
+            case INT:
+                *((int*)(_var)) = atoi(newValue);
+                break;
             }
         }
-        
    
     private:
         void *_var;

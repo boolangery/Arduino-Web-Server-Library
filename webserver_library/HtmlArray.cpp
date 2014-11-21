@@ -14,7 +14,7 @@ HtmlArray::HtmlArray(int row, int column): HtmlObject(0), _nRow(row), _nColumn(c
 }
 
 
-String HtmlArray::getHtml() const
+void HtmlArray::renderHtml(BufferedEthernetClient *client) const
 {
     String tmpRow, tmpColumn;
     
@@ -30,5 +30,5 @@ String HtmlArray::getHtml() const
     
     tmpColumn = "<table>#</table>";
     tmpColumn.replace("#", tmpRow);
-    return getFormatedString(tmpColumn);
+    getFormatedString(client, tmpColumn);
 }

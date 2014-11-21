@@ -8,7 +8,7 @@ class HtmlDiv : public HtmlObject
 {
     public:
         HtmlDiv(HtmlObject *child);
-        String getHtml() const;
+        void renderHtml(BufferedEthernetClient *client) const;
         virtual int acceptNChild() { return 1;}
   
     private:

@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include "LinkedVar.h"
 #include "Vector.h"
-
+#include "BufferedEthernetClient.h"
 
 class JavascriptOnChange;
 
@@ -25,7 +25,8 @@ class HtmlObject
         HtmlObject(int linkedVarsMax, dataFormat_t f);
         
         ~HtmlObject();
-        virtual String getHtml() const = 0;
+        virtual void renderHtml(BufferedEthernetClient *client) const = 0;
+        
         virtual int acceptNChild()=0;
 
         void linkVar(LinkedVar *var);
@@ -41,13 +42,22 @@ class HtmlObject
         LinkedVar** getLinkedVars() {return _linkedVars;}
         
         // Identifiant des objets Html
-        String getId();
+        String getId() const;
         const static char ID_DELIMITER; 
         
+        
+        
+        int setId(char id[])
+        {
+            if (strlen(id) >5) return -1;
+            strcmp(_idStr, id);
+        }
+        
+        
     protected:
-        String getFormatedString(PROGMEM const char *str) const;
-        String getFormatedString(String str) const;
-        String getFormatedDoWork(const char * str) const;
+        void getFormatedString(BufferedEthernetClient *client, String str) const;
+        void getFormatedString(BufferedEthernetClient *client, PROGMEM prog_char str[]) const;
+        void getFormatedDoWork(BufferedEthernetClient *client, const char * str) const;
         
         LinkedVar **_linkedVars;
         int _counter;
@@ -58,6 +68,8 @@ class HtmlObject
         
         static int _instanceCounter;
         int _id;
+        
+        char _idStr[5];
         
   
     private:

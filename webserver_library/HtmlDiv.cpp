@@ -12,7 +12,13 @@ HtmlDiv::HtmlDiv(HtmlObject *child): HtmlObject(0)
 }
 
 
-String HtmlDiv::getHtml() const
+void HtmlDiv::renderHtml(BufferedEthernetClient *client) const
 {
-    return getFormatedString((char*)pgm_read_word(&(HtmlDiv_tab[0])));
+    String ret = "<div> $ </div>", tmp;
+    for (int i=0; i<_childs.size(); i++)
+        tmp += "$";
+        
+    ret.replace("$", tmp);
+    getFormatedString(client, ret);
+    //return getFormatedString((char*)pgm_read_word(&(HtmlDiv_tab[0])));
 }

@@ -46,7 +46,7 @@ void HtmlObject::linkVars(LinkedVar **var, int n)
     }
 }
 
-String HtmlObject::getId()
+String HtmlObject::getId() const
 {
     String s(ID_DELIMITER);
     s += _id;
@@ -54,70 +54,86 @@ String HtmlObject::getId()
     return s;
 }
     
-String HtmlObject::getFormatedString(PROGMEM const char *str) const {
+/*void HtmlObject::getFormatedString(BufferedEthernetClient *client,PROGMEM const char *str) const {
     char b1[BUFFER_SIZE];
     strcpy_P(b1, str);
-    return getFormatedDoWork(b1);
+    getFormatedDoWork(client, b1);
+}*/
+
+void HtmlObject::getFormatedString(BufferedEthernetClient *client,String str) const
+{
+    getFormatedDoWork(client, str.c_str());
 }
 
-String HtmlObject::getFormatedString(String str) const
+// TODO enlever les buffers
+void HtmlObject::getFormatedString(BufferedEthernetClient *client, PROGMEM prog_char str[]) const
 {
-    return getFormatedDoWork(str.c_str());
+    char b1[BUFFER_SIZE];
+    strcpy_P(b1, str);
+    getFormatedDoWork(client, b1);
 }
 
-String HtmlObject::getFormatedDoWork(const char * str) const
+void HtmlObject::getFormatedDoWork(BufferedEthernetClient *client, const char * str) const
 {
-    String ret;
-    int k=0;
+    //String ret;
+    bool addAllChild = false;
+    char strBuffer[64];
+    int k=0, m=0;
     int counter=0;
     int len = strlen(str);
     
     if (_counter > _nLinked)
     {
-        String error = "HtmlObject::Error::Linked vars " ;
-        error += _nLinked;
-        error += " vars";
-        return error;
+        client->print("HtmlObject::Error::Linked vars");
+        return;
     }
-        
-   /* for(int i=0; i<len; i++)
-        if (str[i] == '#')
-            counter++;
-    
-    if (counter != _counter)
-        return "HtmlObject::Error::Number of # != size";*/
-        
     counter=0;
     for(int i=0; i<len; i++)
         if (str[i] == '$')
             counter++;
     
     if (counter != _childs.size())
-        return "HtmlObject::Error::Number of $ != _child.size()";
+    {
+        addAllChild = true;
+    }
   
     for(int i=0; i<len; i++)
     {
         if (str[i] == '#')        // linked vars
         {
             if (_format == HEXA)
-                ret += _linkedVars[k++]->getHexValue();
+            {
+                _linkedVars[k++]->getValueStr(strBuffer, 16);
+                client->print(strBuffer);
+            }
             else
-                ret += _linkedVars[k++]->getValue();
+            {
+                _linkedVars[k++]->getValueStr(strBuffer, 10);
+                client->print((char*)strBuffer);
+            }
         }
         else if (str[i] == '$')    // enfants
         {
-            ret += _childs[k++]->getHtml();
+            if (addAllChild)
+                for(int i=0; i<_childs.size();i++)
+                    _childs[i]->renderHtml(client);
+            else
+                _childs[m++]->renderHtml(client);
+
         }
         else if (str[i] == '&')    // javascript
         {
             if (_javascript != NULL)
-                ret += _javascript->getInnerHtml();
+                client->print(_javascript->getInnerHtml());
+        }
+        else if (str[i] == '%')
+        {
+            client->print(this->getId());   
         }
         else
         {
-            ret += str[i];
+            client->print(str[i]);
         }
     }    
-  return ret;
 }
 

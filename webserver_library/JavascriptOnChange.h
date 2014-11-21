@@ -11,7 +11,7 @@ class JavascriptOnChange : public HtmlObject
     public:
         JavascriptOnChange(HtmlObject *child);
         virtual int acceptNChild() {return 0;}
-        String getHtml() const;
+        void renderHtml(BufferedEthernetClient *client) const;
         String getInnerHtml() const;
   
     private:

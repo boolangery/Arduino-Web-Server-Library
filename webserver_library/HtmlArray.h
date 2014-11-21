@@ -8,7 +8,7 @@ class HtmlArray : public HtmlObject
 {
     public:
         HtmlArray(int row, int column);
-        String getHtml() const;
+        void renderHtml(BufferedEthernetClient *client) const;
         virtual int acceptNChild() { return _nRow*_nColumn;}
   
     private:

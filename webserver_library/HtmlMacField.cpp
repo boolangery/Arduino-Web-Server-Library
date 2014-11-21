@@ -13,7 +13,7 @@ HtmlMacField::HtmlMacField(): HtmlObject(6, HtmlObject::HEXA)
 }
 
 
-String HtmlMacField::getHtml() const
+void HtmlMacField::renderHtml(BufferedEthernetClient *client) const
 {
-    return getFormatedString((char*)pgm_read_word(&(HtmlMacField_tab[0])));
+    getFormatedString(client, (char*)pgm_read_word(&(HtmlMacField_tab[0])));
 }

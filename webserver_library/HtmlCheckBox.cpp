@@ -1,6 +1,6 @@
 #include "HtmlCheckBox.h"
 
-PROGMEM prog_char HtmlCheckBox[] = "<input type='checkbox' &>";
+PROGMEM prog_char HtmlCheckBox[] = "<input type=checkbox &>";
 
 PROGMEM const char *HtmlCheckBox_tab[] = {   
   HtmlCheckBox
@@ -11,7 +11,7 @@ HtmlCheckBox::HtmlCheckBox(): HtmlObject(1)
 }
 
 
-String HtmlCheckBox::getHtml() const
+void HtmlCheckBox::renderHtml(BufferedEthernetClient *client) const
 {
-    return getFormatedString((char*)pgm_read_word(&(HtmlCheckBox_tab[0])));
+    getFormatedString(client, (char*)pgm_read_word(&(HtmlCheckBox_tab[0])));
 }

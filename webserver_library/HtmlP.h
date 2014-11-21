@@ -8,7 +8,7 @@ class HtmlP : public HtmlObject
 {
     public:
         HtmlP(String content);
-        String getHtml() const;
+        void renderHtml(BufferedEthernetClient *client) const;
         virtual int acceptNChild() { return 0;}
   
     private:

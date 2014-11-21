@@ -8,7 +8,7 @@ class HtmlCheckBox : public HtmlObject
 {
     public:
         HtmlCheckBox();
-        String getHtml() const;
+        void renderHtml(BufferedEthernetClient *client) const;
         virtual int acceptNChild() {return 0;}
 
   

@@ -6,10 +6,11 @@ HtmlP::HtmlP(String content): HtmlObject(0), _content(content)
 }
 
 
-String HtmlP::getHtml() const
+void HtmlP::renderHtml(BufferedEthernetClient *client) const
 {
     String ret = "<p>";
     ret += _content;
     ret += "</p>";
-    return ret;
+    //return ret;
+    client->print(ret);
 }
